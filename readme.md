@@ -32,10 +32,10 @@ If a conversion fails for any reason, the original file will be moved to incompl
 The index file will show completed conversions / ongoing conversions & incomplete (erroneous) conversions.
 
 #CRON
-for a cron task, put a hit to /convert.php every 5 minutes or so (depending on the size of the uploaded files and the )
+for a cron task, put a hit to /convert.php every 5 minutes or so (depending on the size of the uploaded files whether your server sucks or not)
 
 
 
-#ToDo
+#Todo
 - implement a queueing system per user (this process can be quite resource intensive and new ffmpeg processes can start killing off existing ones. At the moment this is handled, but it shouldn't really be a thing.
 - uploader tool for user interaction
