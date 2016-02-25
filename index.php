@@ -21,7 +21,7 @@ $files = array_values(array_filter(scandir(VIDEO_DIR), function($file){
 }));
 
 //get ongoing conversions
-$ongoing_files = array_values(array_filter(scandir(ONGOING_DIR), function($file){
+$ongoing_files = array_values(array_filter(scandir(OUTGOING_DIR), function($file){
     return preg_match('/^.*\.(3G2|3GP|ASF|AVI|FLV|M4V|MOV|MP4|MPG|RM|SRT|SWF|VOB|WMV|MKV)$/i', $file);
 }));
 
@@ -30,7 +30,7 @@ $failures = array_values(array_filter(scandir(FAILED_DIR), function($failure){
     return preg_match('/^.*\.(3G2|3GP|ASF|AVI|FLV|M4V|MOV|MP4|MPG|RM|SRT|SWF|VOB|WMV|MKV)$/i', $failure);
 }));
 
-$names = $names = json_decode(file_get_contents('names.json'), true);
+$names = $names = json_decode(file_get_contents(VIDEO_DIR . 'names.json'), true);
 
 ?>
 
@@ -74,7 +74,7 @@ $names = $names = json_decode(file_get_contents('names.json'), true);
 
     foreach($ongoing_files as $ongoing){
 
-        $original_name = $names['input'][$ongoing];
+        $original_name = $names['output'][$ongoing];
 
         echo " 
                 <tr>
