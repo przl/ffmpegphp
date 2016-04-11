@@ -3,8 +3,10 @@
 namespace ffmpegconverter\api;
 
 require_once '../converter/convert.php';
+require_once '../config/config.php';
 
 use ffmpegconverter\convert\FfmpegConverter;
+use ffmpegconverter\config\Config;
 
 /**
  * Gets info about the files on the ffmpeg conversion server
@@ -24,7 +26,13 @@ class FfmpegApi extends FfmpegConverter
     {
         $new_files = array();
         foreach ($files as $file) {
-            $new_files[] = array('name' => $file, 'size' => $this->formatSizeUnits(filesize($directory . $file)), 'created_at' => date('Y-m-d H:i:s', filemtime($directory . $file)));
+            $new_files[] = array(
+                $file => array(
+                    'size' => $this->formatSizeUnits(filesize($directory . $file)), 
+                    'created_at' => date('Y-m-d H:i:s', filemtime($directory . $file)), 
+                    'link' => Config::get_web_path() . '/completed/' .  $file
+                    )
+                );
         }
         return $new_files;
     }

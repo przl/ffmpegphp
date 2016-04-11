@@ -23,8 +23,11 @@ hash -r
 #test is installed (should give a list of options)
 ffpmeg
 
+#add extension to php.ini
+extension=ffmpeg.so
+
 #create folders in the location of your page
-mkdir -m 777 completed && mkdir -m 777 incomplete && mkdir -m 777 logs && mkdir -m 777 processing && mkdir -m 777 queue && mkdir -m 777 processing/input_processing&& mkdir -m 777 processing/output_processing
+mkdir -m 777 completed && mkdir -m 777 incomplete && mkdir -m 777 logs && mkdir -m 777 processing && mkdir -m 777 queue && mkdir -m 777 processing/input_processing && mkdir -m 777 processing/output_processing
 
 #instructions..
 put a file in the queue folder, run convert.php through apache (browser). If a file is successfully processed, the output will be found in the completed folder.

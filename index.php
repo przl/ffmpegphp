@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Mp4 Coverter</title>
+    <title>FFMPEG MP4 Converter</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
 </head>
 <body>
@@ -14,6 +14,7 @@ const VIDEO_DIR = 'completed/';
 const FAILED_DIR = 'incomplete/';
 const ONGOING_DIR = 'processing/input_processing/';
 const OUTGOING_DIR = 'processing/output_processing/';
+const QUEUE_DIR = 'queue/';
 
 //get completed files
 $files = array_values(array_filter(scandir(VIDEO_DIR), function($file){
@@ -24,6 +25,12 @@ $files = array_values(array_filter(scandir(VIDEO_DIR), function($file){
 $ongoing_files = array_values(array_filter(scandir(OUTGOING_DIR), function($file){
     return preg_match('/^.*\.(3G2|3GP|ASF|AVI|FLV|M4V|MOV|MP4|MPG|RM|SRT|SWF|VOB|WMV|MKV)$/i', $file);
 }));
+
+//get queue items
+$queued_files = array_values(array_filter(scandir(QUEUE_DIR), function($file){
+    return preg_match('/^.*\.(3G2|3GP|ASF|AVI|FLV|M4V|MOV|MP4|MPG|RM|SRT|SWF|VOB|WMV|MKV)$/i', $file);
+}));
+
 
 //get failed conversions
 $failures = array_values(array_filter(scandir(FAILED_DIR), function($failure){
@@ -88,6 +95,33 @@ $names = $names = json_decode(file_get_contents(VIDEO_DIR . 'names.json'), true)
 
 </table>
 
+<h1>Queued Conversions</h1>
+
+<table class="table">
+    <tr>
+        <th>Filename</th>
+        <th>Size</th>
+        <th>Time Created</th>
+    </tr>
+    <?php 
+
+    foreach($queued_files  as $queue){
+
+        $original_name = $names['output'][$file];
+
+        echo " 
+                <tr>
+                    <td><a href='". QUEUE_DIR . "$file'</a>$original_name</td>
+                    <td> " . formatSizeUnits(filesize(QUEUE_DIR . $queue)) . " </td>
+                    <td> " . date ("Y-m-d-H:i:s", filemtime(QUEUE_DIR . $queue)) . "</td>
+                </tr>
+
+            ";
+    }
+?>
+
+</table>
+
 
 <h1>Failed Conversions</h1>
 
@@ -115,7 +149,15 @@ $names = $names = json_decode(file_get_contents(VIDEO_DIR . 'names.json'), true)
 ?>
 
 </table>
+</div>
 
+<div class="container">
+    <h2>quick and dirty uploader...</h2>
+    <form action="api/file_upload.php?resolution=1080&email=test@test.test" method="post" enctype="multipart/form-data">
+        Select Video:
+        <input type="file" name="file" id="file">
+        <input type="submit" value="Upload" name="submit">
+    </form>
 </div>
 </body>
 </html>
@@ -123,33 +165,34 @@ $names = $names = json_decode(file_get_contents(VIDEO_DIR . 'names.json'), true)
 <?php 
 // Snippet from PHP Share: http://www.phpshare.org
 
-    function formatSizeUnits($bytes)
+function formatSizeUnits($bytes)
+{
+    if ($bytes >= 1073741824)
     {
-        if ($bytes >= 1073741824)
-        {
-            $bytes = number_format($bytes / 1073741824, 2) . ' GB';
-        }
-        elseif ($bytes >= 1048576)
-        {
-            $bytes = number_format($bytes / 1048576, 2) . ' MB';
-        }
-        elseif ($bytes >= 1024)
-        {
-            $bytes = number_format($bytes / 1024, 2) . ' KB';
-        }
-        elseif ($bytes > 1)
-        {
-            $bytes = $bytes . ' bytes';
-        }
-        elseif ($bytes == 1)
-        {
-            $bytes = $bytes . ' byte';
-        }
-        else
-        {
-            $bytes = '0 bytes';
-        }
+        $bytes = number_format($bytes / 1073741824, 2) . ' GB';
+    }
+    elseif ($bytes >= 1048576)
+    {
+        $bytes = number_format($bytes / 1048576, 2) . ' MB';
+    }
+    elseif ($bytes >= 1024)
+    {
+        $bytes = number_format($bytes / 1024, 2) . ' KB';
+    }
+    elseif ($bytes > 1)
+    {
+        $bytes = $bytes . ' bytes';
+    }
+    elseif ($bytes == 1)
+    {
+        $bytes = $bytes . ' byte';
+    }
+    else
+    {
+        $bytes = '0 bytes';
+    }
 
-        return $bytes;
+    return $bytes;
 }
 ?>
+
